@@ -1,0 +1,44 @@
+{% extends 'market/base.html' %}
+
+{% block title %}Мой профиль{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <h1>Мой профиль</h1>
+
+    <div class="profile-card">
+        <p><strong>Логин:</strong> {{ profile.user.username }}</p>
+        <p><strong>Отображаемое имя:</strong> {{ profile.display_name|default:"(не указано)" }}</p>
+        <p><strong>О себе:</strong> {{ profile.bio|default:"(нет описания)" }}</p>
+    </div>
+
+    <h2>Мои товары</h2>
+    {% with products=profile.user.products.all %}
+        {% if products %}
+            <div class="product-grid">
+                {% for product in products %}
+                    <a href="{% url 'market:product_detail' product.pk %}" class="product-card">
+                        <div class="product-image-wrap">
+                            {% with image=product.images.first %}
+                                {% if image %}
+                                    <img src="{{ image.image.url }}" alt="{{ product.title }}">
+                                {% else %}
+                                    <div class="placeholder-image">
+                                        Нет фото
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                        <div class="product-card-body">
+                            <h2 class="product-title">{{ product.title }}</h2>
+                            <p class="product-meta">Артикул: {{ product.sku }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Вы ещё не добавили ни одного товара.</p>
+        {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Платформа обмена товаров{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <div class="logo">
+            <a href="{% url 'market:product_list' %}">Exchange Market</a>
+        </div>
+        <nav class="main-nav">
+            <a href="{% url 'market:product_list' %}">Товары</a>
+            <a href="{% url 'market:profile' %}">Мой профиль</a>
+        </nav>
+        <div class="user-info">
+            {% if request.user.is_authenticated %}
+                <span class="user-name">Привет, {{ request.user.username }}!</span>
+            {% else %}
+                <a href="/admin/login/" class="btn-link">Войти</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+<main class="container page-content">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>Платформа обмена товаров · {{ request.user.username|default:"Гость" }}</p>
+    </div>
+</footer>
+</body>
+</html>

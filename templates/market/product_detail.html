@@ -1,0 +1,40 @@
+{% extends 'market/base.html' %}
+
+{% block title %}{{ product.title }}{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <div class="product-detail-main">
+        <div class="product-detail-images">
+            {% if images %}
+                {% for image in images %}
+                    <img src="{{ image.image.url }}" alt="Фото {{ product.title }}">
+                {% endfor %}
+            {% else %}
+                <div class="placeholder-image large">
+                    Нет фотографий
+                </div>
+            {% endif %}
+        </div>
+        <div class="product-detail-info">
+            <h1>{{ product.title }}</h1>
+            <p class="product-detail-sku">Артикул: {{ product.sku }}</p>
+            <p class="product-detail-owner">Владелец: {{ product.owner.username }}</p>
+
+            <div class="product-detail-description">
+                <h2>Описание</h2>
+                <p>{{ product.description|default:"Описание отсутствует." }}</p>
+            </div>
+
+            <div class="product-detail-actions">
+                <a href="{% url 'market:product_reviews' product.pk %}" class="btn-primary">
+                    Перейти к отзывам
+                </a>
+                <a href="{% url 'market:product_list' %}" class="btn-secondary">
+                    ← Вернуться к списку товаров
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

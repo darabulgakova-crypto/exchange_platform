@@ -1,0 +1,51 @@
+{% extends 'market/base.html' %}
+
+{% block title %}Отзывы о {{ product.title }}{% endblock %}
+
+{% block content %}
+<div class="reviews-page">
+    <div class="reviews-header">
+        <h1>Отзывы о товаре: {{ product.title }}</h1>
+        <a href="{% url 'market:product_detail' product.pk %}" class="btn-secondary">
+            ← Назад к товару
+        </a>
+    </div>
+
+    <div class="reviews-layout">
+        <section class="reviews-list">
+            <h2>Список отзывов</h2>
+            {% if reviews %}
+                <ul>
+                    {% for review in reviews %}
+                        <li class="review-item">
+                            <div class="review-header">
+                                <strong>{{ review.author.username }}</strong>
+                                <span class="review-rating">⭐ {{ review.rating }}</span>
+                            </div>
+                            <p class="review-text">{{ review.text }}</p>
+                            <small class="review-date">
+                                {{ review.created_at|date:"d.m.Y H:i" }}
+                            </small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Пока нет отзывов. Станьте первым!</p>
+            {% endif %}
+        </section>
+
+        <section class="review-form-wrap">
+            <h2>Оставить отзыв</h2>
+            {% if error %}
+                <p class="error-text">{{ error }}</p>
+            {% endif %}
+
+            <form method="post" class="review-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn-primary">Отправить</button>
+            </form>
+        </section>
+    </div>
+</div>
+{% endblock %}
