@@ -1,10 +1,12 @@
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Count, Avg
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db.models import Count, Avg, Q
 
+from .models import Product, ProductImage, Review, Profile
+from .forms import ReviewForm, ProfileForm, ProductForm
+# Updated profile and product editing functionality
 
-from .models import Product, Review, Profile
-from .forms import ReviewForm
 
 def product_list(request):
     products = (
@@ -23,9 +25,11 @@ def product_list(request):
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk, is_active=True)
     images = product.images.all()
+    owner_profile = Profile.objects.filter(user=product.owner).first()
     return render(request, 'market/product_detail.html', {
         'product': product,
         'images': images,
+        'owner_profile': owner_profile,
     })
 
 
@@ -61,6 +65,82 @@ def product_reviews(request, pk):
 
 @login_required
 def profile_view(request):
-    # Попробуем взять профиль, если его нет — можно создать "по месту"
     profile, created = Profile.objects.get_or_create(user=request.user)
-    return render(request, 'market/profile.html', {'profile': profile})
+
+    return render(request, 'market/profile.html', {
+        'profile': profile,
+    })
+
+@login_required
+def profile_edit(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Профиль успешно обновлён.')
+            return redirect('market:profile')
+    else:
+        form = ProfileForm(instance=profile)
+
+    return render(request, 'market/profile_edit.html', {
+        'profile': profile,
+        'form': form,
+    })
+
+
+@login_required
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.owner = request.user
+            product.save()
+
+            image = form.cleaned_data.get('image')
+            if image:
+                ProductImage.objects.create(product=product, image=image)
+
+            messages.success(request, 'Товар успешно добавлен.')
+            return redirect('market:product_detail', pk=product.pk)
+    else:
+        form = ProductForm()
+
+    return render(request, 'market/add_product.html', {'form': form})
+
+@login_required
+def edit_product(request, pk):
+    product = get_object_or_404(Product, pk=pk, owner=request.user)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            product = form.save()
+            image = form.cleaned_data.get('image')
+            if image:
+                ProductImage.objects.create(product=product, image=image)
+            messages.success(request, 'Товар успешно обновлён.')
+            return redirect('market:product_detail', pk=product.pk)
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, 'market/edit_product.html', {
+        'form': form,
+        'product': product,
+    })
+
+
+@login_required
+def delete_product(request, pk):
+    product = get_object_or_404(Product, pk=pk, owner=request.user)
+
+    if request.method == 'POST':
+        product.delete()
+        messages.success(request, 'Товар был удалён.')
+        return redirect('market:profile')
+
+    return render(request, 'market/confirm_delete_product.html', {
+        'product': product,
+    })

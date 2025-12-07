@@ -1,0 +1,18 @@
+{% extends 'market/base.html' %}
+
+{% block title %}Добавить товар{% endblock %}
+
+{% block content %}
+<h1>Добавить товар</h1>
+<p class="page-subtitle">Заполните форму, чтобы выложить товар для обмена.</p>
+
+<form method="post" enctype="multipart/form-data" class="profile-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn-primary">Сохранить</button>
+</form>
+
+<p style="margin-top: 12px;">
+    <a href="{% url 'market:profile' %}" class="btn-secondary">← Назад в профиль</a>
+</p>
+{% endblock %}

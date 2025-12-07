@@ -18,6 +18,11 @@ class Profile(models.Model):
         'О себе',
         blank=True,
     )
+    phone_number = models.CharField(
+        'Телефон для связи',
+        max_length=20,
+        blank=True,
+    )
 
     def __str__(self):
         return self.display_name or self.user.username

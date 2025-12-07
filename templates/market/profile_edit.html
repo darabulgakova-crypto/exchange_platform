@@ -1,0 +1,25 @@
+{% extends 'market/base.html' %}
+
+{% block title %}Редактировать профиль{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <h1>Редактировать профиль</h1>
+    <p class="page-subtitle">Обновите отображаемое имя, информацию о себе и телефон для связи.</p>
+
+    <div class="profile-card" style="margin-bottom: 16px;">
+        <p><strong>Логин:</strong> {{ profile.user.username }}</p>
+        <p><strong>Текущие отображаемое имя:</strong> {{ profile.display_name|default:"(не указано)" }}</p>
+        <p><strong>Текущий телефон:</strong> {{ profile.phone_number|default:"(не указан)" }}</p>
+    </div>
+
+    <form method="post" class="profile-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-primary">Сохранить</button>
+        <a href="{% url 'market:profile' %}" class="btn-secondary" style="margin-left: 8px;">
+            Отмена
+        </a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'market/base.html' %}
+
+{% block title %}Удалить товар{% endblock %}
+
+{% block content %}
+<h1>Удалить товар</h1>
+<p class="page-subtitle">
+    Вы действительно хотите удалить товар <strong>{{ product.title }}</strong>? Это действие нельзя отменить.
+</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn-danger">Да, удалить</button>
+    <a href="{% url 'market:product_detail' product.pk %}" class="btn-secondary">
+        Отмена
+    </a>
+</form>
+{% endblock %}

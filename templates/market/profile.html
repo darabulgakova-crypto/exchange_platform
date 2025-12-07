@@ -10,9 +10,18 @@
         <p><strong>Логин:</strong> {{ profile.user.username }}</p>
         <p><strong>Отображаемое имя:</strong> {{ profile.display_name|default:"(не указано)" }}</p>
         <p><strong>О себе:</strong> {{ profile.bio|default:"(нет описания)" }}</p>
+        <p><strong>Телефон для связи:</strong> {{ profile.phone_number|default:"(не указан)" }}</p>
+        <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <a href="{% url 'market:profile_edit' %}" class="btn-secondary">
+                Редактировать профиль
+            </a>
+            <a href="{% url 'market:add_product' %}" class="btn-primary">
+                + Добавить новый товар
+            </a>
+        </div>
     </div>
 
-    <h2>Мои товары</h2>
+    <h2 style="margin-top: 24px;">Мои товары</h2>
     {% with products=profile.user.products.all %}
         {% if products %}
             <div class="product-grid">
@@ -23,9 +32,7 @@
                                 {% if image %}
                                     <img src="{{ image.image.url }}" alt="{{ product.title }}">
                                 {% else %}
-                                    <div class="placeholder-image">
-                                        Нет фото
-                                    </div>
+                                    <div class="placeholder-image">Нет фото</div>
                                 {% endif %}
                             {% endwith %}
                         </div>

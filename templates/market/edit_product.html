@@ -1,0 +1,20 @@
+{% extends 'market/base.html' %}
+
+{% block title %}Редактировать товар{% endblock %}
+
+{% block content %}
+<h1>Редактировать товар</h1>
+<p class="page-subtitle">Вы можете изменить название, артикул, описание и добавить новое фото.</p>
+
+<form method="post" enctype="multipart/form-data" class="profile-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn-primary">Сохранить изменения</button>
+</form>
+
+<p style="margin-top: 12px;">
+    <a href="{% url 'market:product_detail' product.pk %}" class="btn-secondary">
+        ← Назад к товару
+    </a>
+</p>
+{% endblock %}

@@ -19,21 +19,38 @@
         <div class="product-detail-info">
             <h1>{{ product.title }}</h1>
             <p class="product-detail-sku">Артикул: {{ product.sku }}</p>
-            <p class="product-detail-owner">Владелец: {{ product.owner.username }}</p>
+            <p class="product-detail-owner">
+    Владелец: {{ product.owner.username }}
+    {% if owner_profile and owner_profile.phone_number %}
+        <br>Телефон для связи: {{ owner_profile.phone_number }}
+    {% endif %}
+</p>
+
 
             <div class="product-detail-description">
                 <h2>Описание</h2>
                 <p>{{ product.description|default:"Описание отсутствует." }}</p>
             </div>
 
-            <div class="product-detail-actions">
-                <a href="{% url 'market:product_reviews' product.pk %}" class="btn-primary">
-                    Перейти к отзывам
-                </a>
-                <a href="{% url 'market:product_list' %}" class="btn-secondary">
-                    ← Вернуться к списку товаров
-                </a>
-            </div>
+
+<div class="product-detail-actions">
+    <a href="{% url 'market:product_reviews' product.pk %}" class="btn-primary">
+        Перейти к отзывам
+    </a>
+    <a href="{% url 'market:product_list' %}" class="btn-secondary">
+        ← Вернуться к списку товаров
+    </a>
+
+    {% if request.user.is_authenticated and request.user == product.owner %}
+        <a href="{% url 'market:edit_product' product.pk %}" class="btn-secondary">
+            Редактировать
+        </a>
+        <a href="{% url 'market:delete_product' product.pk %}" class="btn-danger">
+            Удалить
+        </a>
+    {% endif %}
+</div>
+
         </div>
     </div>
 </div>
