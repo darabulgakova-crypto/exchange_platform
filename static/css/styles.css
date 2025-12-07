@@ -246,6 +246,8 @@ h2 {
     background: #2563eb;
 }
 
+/* UI improvements for product cards */
+
 .btn-secondary {
     background: var(--accent-soft);
     color: var(--text-main);
